@@ -7,6 +7,7 @@ import { useState } from "react";
 import Login from "../components/Login";
 import { useRouter } from "next/router";
 import Register from "./register";
+import ForgotPassword from "./forgot-password";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -38,6 +39,8 @@ export default function App(props: AppProps) {
         </Layout>
       ) : router.pathname === "/register" ? (
         <Register />
+      ) : router.pathname === "/forgot-password" ? (
+        <ForgotPassword />
       ) : (
         <Login />
       )}

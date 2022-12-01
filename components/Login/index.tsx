@@ -8,6 +8,7 @@ import {
   Title,
   Text,
   Anchor,
+  Group,
 } from "@mantine/core";
 import Link from "next/link";
 
@@ -77,7 +78,13 @@ export default function Login() {
           mt="md"
           size="md"
         />
-        <Checkbox label="Keep me logged in" mt="xl" size="md" />
+        <Group position="apart" mt="lg">
+          <Checkbox label="Keep me logged in" sx={{ lineHeight: 1 }} />
+          <Link href="/forgot-password" className={classes.link}>
+            Forgot password?
+          </Link>
+        </Group>
+
         <Button fullWidth mt="xl" size="md">
           Login
         </Button>
