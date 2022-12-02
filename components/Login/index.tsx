@@ -11,6 +11,8 @@ import {
   Group,
 } from "@mantine/core";
 import Link from "next/link";
+import { useState } from "react";
+import axios from "axios";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -21,6 +23,7 @@ const useStyles = createStyles((theme) => ({
   },
   link: {
     color: "#006EFA",
+    fontSize: 14,
   },
   form: {
     borderRight: `1px solid ${
@@ -49,8 +52,62 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+type TypeToLogin = {
+  role_id: string;
+  email: string;
+  password: string;
+};
+
 export default function Login() {
   const { classes } = useStyles();
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [emptyEmail, setEmptyEmail] = useState<boolean>(false);
+  const [emptyPassword, setEmptyPassword] = useState<boolean>(false);
+
+  async function Login() {
+    // check all fields
+    if (email === "" || password === "") {
+      if (email === "") {
+        setEmptyEmail(true);
+      } else {
+        setEmptyEmail(false);
+      }
+      if (password === "") {
+        setEmptyPassword(true);
+      } else {
+        setEmptyPassword(false);
+      }
+      return;
+    }
+
+    setEmptyEmail(false);
+    setEmptyPassword(false);
+
+    try {
+      const data: TypeToLogin = {
+        role_id: "SEL",
+        email: email,
+        password: password,
+      };
+
+      const response = await axios.post(
+        `${process.env.API}account/login`,
+        data
+      );
+      const { error, message } = response.data;
+      if (error) {
+        alert(error);
+      } else {
+        alert(message);
+      }
+    } catch (err) {
+      //@ts-ignore
+      alert(err.response.data.error);
+    }
+  }
+
   return (
     <div className={classes.wrapper}>
       <Paper className={classes.form} radius={0} p={30}>
@@ -71,13 +128,31 @@ export default function Login() {
           label="Email address"
           placeholder="hello@gmail.com"
           size="md"
+          onChange={(value) => setEmail(value.currentTarget.value)}
+          error={emptyEmail}
         />
+        {emptyEmail ? (
+          <Text fz="xs" c="red">
+            Name is required
+          </Text>
+        ) : (
+          <></>
+        )}
         <PasswordInput
           label="Password"
           placeholder="Your password"
           mt="md"
           size="md"
+          onChange={(value) => setPassword(value.currentTarget.value)}
+          error={emptyPassword}
         />
+        {emptyPassword ? (
+          <Text fz="xs" c="red">
+            Password is required
+          </Text>
+        ) : (
+          <></>
+        )}
         <Group position="apart" mt="lg">
           <Checkbox label="Keep me logged in" sx={{ lineHeight: 1 }} />
           <Link href="/forgot-password" className={classes.link}>
@@ -85,7 +160,7 @@ export default function Login() {
           </Link>
         </Group>
 
-        <Button fullWidth mt="xl" size="md">
+        <Button fullWidth mt="xl" size="md" onClick={Login}>
           Login
         </Button>
 

@@ -2,6 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+};
 
-module.exports = nextConfig
+module.exports = {
+  nextConfig,
+  env: {
+    API: process.env.API,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+    return config;
+  },
+};
