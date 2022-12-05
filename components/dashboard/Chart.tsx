@@ -38,7 +38,7 @@ export default function App(props: HighchartsReact.Props) {
   // Chart options
   const options: Highcharts.Options = {
     title: {
-      text: "Total Daily Customer",
+      text: "Total Daily Balance",
     },
     xAxis: {
       type: "datetime",
@@ -80,7 +80,7 @@ export default function App(props: HighchartsReact.Props) {
     series: [
       {
         type: "area",
-        name: "Total Customer: ",
+        name: "Total Balance (VND): ",
         data: data,
       },
     ],

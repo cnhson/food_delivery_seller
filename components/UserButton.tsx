@@ -26,34 +26,12 @@ const useStyles = createStyles((theme) => ({
 
 interface UserButtonProps extends UnstyledButtonProps {
   image?: string;
-  username: string;
+  email: string;
   icon?: React.ReactNode;
 }
 
-export function UserButton({
-  image,
-  username,
-  icon,
-  ...others
-}: UserButtonProps) {
+export function UserButton({ image, email, icon, ...others }: UserButtonProps) {
   const { classes } = useStyles();
-
-  let char = [];
-  // for (let i = 0; i < address.length; i++) {
-  //   char.push(address[i]);
-  // }
-  // const shortedAddress = [
-  //   char[0],
-  //   char[1],
-  //   char[2],
-  //   char[3],
-  //   "...",
-  //   char[char.length - 4],
-  //   char[char.length - 3],
-  //   char[char.length - 2],
-  //   char[char.length - 1],
-  //   char[char.length],
-  // ];
 
   return (
     <UnstyledButton className={classes.user} {...others}>
@@ -62,11 +40,11 @@ export function UserButton({
 
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
-            {username}
+            {email}
           </Text>
 
           <Text color="dimmed" size="xs">
-            Admin
+            Seller
           </Text>
         </div>
 

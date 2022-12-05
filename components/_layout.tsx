@@ -24,9 +24,6 @@ function timeout(ms: number) {
 export default function Layout({ children }: LayoutProps) {
   const { classes } = useStyles();
 
-  useEffect(() => {}, []);
-
-  timeout(3000);
   return (
     <>
       <Group align="start" className={classes.root}>

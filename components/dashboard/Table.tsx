@@ -38,7 +38,7 @@ const useStyles = createStyles((theme) => ({
   },
   paginationText: {
     display: "flex",
-    padding: 6,
+    padding: 8,
   },
   enableButtom: {
     color: "#0097FF",
@@ -187,26 +187,29 @@ export default function TableReviews() {
           <nav>
             <ul>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button
-                    variant="white"
-                    disabled={true}
-                    className={classes.enableButtom}
-                    radius={0}
-                  >
-                    first
-                  </Button>
-                </Paper>
+                <Button
+                  variant="default"
+                  disabled={true}
+                  className={classes.enableButtom}
+                  radius={5}
+                  mr={2}
+                >
+                  first
+                </Button>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button variant="white" disabled={true} radius={0}>
-                    <Image src={arrowleft} width={10} height={10} alt={""} />
-                  </Button>
-                </Paper>
+                <Button variant="default" disabled={true} radius={5} mr={2}>
+                  <Image src={arrowleft} width={10} height={10} alt={""} />
+                </Button>
               </li>
               <li>
-                <Paper withBorder className={classes.paginationText} radius={0}>
+                <Paper
+                  withBorder
+                  className={classes.paginationText}
+                  fz="xs"
+                  radius={5}
+                  mr={2}
+                >
                   <span>
                     {" "}
                     Page <strong> 1 </strong>
@@ -216,23 +219,19 @@ export default function TableReviews() {
                 </Paper>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button variant="white" disabled={false} radius={0}>
-                    <Image src={arrowright} width={10} height={10} alt={""} />
-                  </Button>
-                </Paper>
+                <Button variant="default" disabled={false} radius={5} mr={2}>
+                  <Image src={arrowright} width={10} height={10} alt={""} />
+                </Button>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button
-                    variant="white"
-                    disabled={false}
-                    className={classes.enableButtom}
-                    radius={0}
-                  >
-                    Last
-                  </Button>
-                </Paper>
+                <Button
+                  variant="default"
+                  disabled={false}
+                  className={classes.enableButtom}
+                  radius={5}
+                >
+                  Last
+                </Button>
               </li>
             </ul>
           </nav>
@@ -258,26 +257,29 @@ export default function TableReviews() {
           <nav>
             <ul>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button
-                    variant="white"
-                    disabled={true}
-                    className={classes.enableButtom}
-                    radius={0}
-                  >
-                    first
-                  </Button>
-                </Paper>
+                <Button
+                  variant="default"
+                  disabled={true}
+                  className={classes.enableButtom}
+                  radius={5}
+                  mr={2}
+                >
+                  first
+                </Button>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button variant="white" disabled={true} radius={0}>
-                    <Image src={arrowleft} width={10} height={10} alt={""} />
-                  </Button>
-                </Paper>
+                <Button variant="default" disabled={true} radius={5} mr={2}>
+                  <Image src={arrowleft} width={10} height={10} alt={""} />
+                </Button>
               </li>
               <li>
-                <Paper withBorder className={classes.paginationText} radius={0}>
+                <Paper
+                  withBorder
+                  className={classes.paginationText}
+                  fz="xs"
+                  radius={5}
+                  mr={2}
+                >
                   <span>
                     {" "}
                     Page <strong> 1 </strong>
@@ -287,23 +289,19 @@ export default function TableReviews() {
                 </Paper>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button variant="white" disabled={false} radius={0}>
-                    <Image src={arrowright} width={10} height={10} alt={""} />
-                  </Button>
-                </Paper>
+                <Button variant="default" disabled={false} radius={5} mr={2}>
+                  <Image src={arrowright} width={10} height={10} alt={""} />
+                </Button>
               </li>
               <li>
-                <Paper withBorder radius={0}>
-                  <Button
-                    variant="white"
-                    disabled={false}
-                    className={classes.enableButtom}
-                    radius={0}
-                  >
-                    Last
-                  </Button>
-                </Paper>
+                <Button
+                  variant="default"
+                  disabled={false}
+                  className={classes.enableButtom}
+                  radius={5}
+                >
+                  Last
+                </Button>
               </li>
             </ul>
           </nav>

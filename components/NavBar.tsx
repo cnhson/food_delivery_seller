@@ -16,6 +16,7 @@ import Image from "next/image";
 import image from "../public/Mustifi.svg";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -110,6 +111,19 @@ export default function NavbarSimple() {
   const { classes, cx } = useStyles();
   const router = useRouter();
   const [active, setActive] = useState(router.pathname);
+  const [name, setName] = useState<string>("");
+
+  async function fetchUserData() {
+    const userId = sessionStorage.getItem("User");
+    const response = await axios.get(
+      `${process.env.API}account/get-account/${userId}`
+    );
+    setName(response.data.name);
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const links = data.map((item) => (
     <Link
@@ -140,7 +154,7 @@ export default function NavbarSimple() {
         {links}
       </Navbar.Section>
       <Navbar.Section className={classes.footer}>
-        <UserButton username={"baomap120301"} />
+        <UserButton email={name} />
       </Navbar.Section>
     </Navbar>
   );
