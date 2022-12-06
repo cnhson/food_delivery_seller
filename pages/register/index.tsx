@@ -19,11 +19,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import image from "../../public/default-thumbnail.jpg";
-import { create } from "ipfs-http-client";
+import { client, genRandonString } from "../../components/common";
 import { useRouter } from "next/router";
-
-const projectId = process.env.PROJECT_ID;
-const projectKey = process.env.SECRET_KEY;
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -65,45 +62,50 @@ type TypeStore = {
 export default function Register() {
   const { classes } = useStyles();
 
-  // field of data
+  // info of account
   const [name, setName] = useState<string>("");
-  const [storeName, setStoreName] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [repeatPass, setRepeatPass] = useState<string>("");
-  const [match, setMatch] = useState<boolean>(true);
+  const [accountId, setAccountId] = useState<string>("");
+
+  // check if account info are empty
   const [emptyName, setEmptyName] = useState<boolean>(false);
+  const [emptyEmail, setEmptyEmail] = useState<boolean>(false);
+  const [emptyPassword, setEmptyPassword] = useState<boolean>(false);
+
+  // check if repeat password is match
+  const [match, setMatch] = useState<boolean>(true);
+
+  // store info
+  const [storeName, setStoreName] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState<any>(image);
+  const [typeChosen, setTypeChosen] = useState<string>("");
+
+  // type of store
+  const [typeStore, setTypeStore] = useState<Array<TypeStore>>([]);
+
+  // check if store info are empty
   const [emptyStoreName, setEmptyStoreName] = useState<boolean>(false);
   const [emptyAddress, setEmptyAddress] = useState<boolean>(false);
   const [emptyDescription, setEmptyDescription] = useState<boolean>(false);
   const [emptyImage, setEmptyImage] = useState<boolean>(false);
-  const [emptyEmail, setEmptyEmail] = useState<boolean>(false);
   const [emptyType, setEmptyType] = useState<boolean>(false);
-  const [emptyPassword, setEmptyPassword] = useState<boolean>(false);
+
+  // loading
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // check if account is created successfully
   const [created, setCreated] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<any>(image);
-  const [typeStore, setTypeStore] = useState<Array<TypeStore>>([]);
-  const [typeChosen, setTypeChosen] = useState<string>("");
-  const [accountId, setAccountId] = useState<string>("");
 
   const router = useRouter();
 
-  // get a random key
-  function genRandonString() {
-    let chars =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let charLength = chars.length;
-    let result = "";
-    for (let i = 0; i < 10; i++) {
-      result += chars.charAt(Math.floor(Math.random() * charLength));
-    }
-    return result;
-  }
-
+  // create account
   async function Register() {
+    setLoading(true);
     // check all fields
     if (name === "" || email === "" || password === "") {
       if (name === "") {
@@ -122,10 +124,12 @@ export default function Register() {
       } else {
         setEmptyPassword(false);
       }
+      setLoading(false);
       return;
     }
     if (password !== repeatPass) {
       setMatch(false);
+      setLoading(false);
       return;
     }
 
@@ -155,18 +159,22 @@ export default function Register() {
 
       if (response.data.error) {
         alert(response.data.error);
+        setLoading(false);
       } else {
         alert(response.data.message);
         setCreated(true);
+        setLoading(false);
         setAccountId(account_id);
       }
     } catch (err) {
       // @ts-ignore
       alert(err.response.data.error);
+      setLoading(false);
     }
   }
 
   async function RegisterStore() {
+    setLoading(true);
     // check all fields
     if (
       storeName === "" ||
@@ -200,6 +208,7 @@ export default function Register() {
       } else {
         setEmptyType(false);
       }
+      setLoading(false);
       return;
     }
 
@@ -211,19 +220,6 @@ export default function Register() {
 
     const storeId = genRandonString();
     const timestamp = new Date().toISOString();
-
-    // create connection with ipfs
-    const auth =
-      "Basic " + Buffer.from(projectId + ":" + projectKey).toString("base64");
-    // Create connection to IPFS using infura
-    const client = create({
-      host: "ipfs.infura.io",
-      port: 5001,
-      protocol: "https",
-      headers: {
-        authorization: auth,
-      },
-    });
 
     // Send image into IPFS
     const fileAdded = await client.add(file);
@@ -245,8 +241,10 @@ export default function Register() {
       const response = await axios.post(process.env.API + "store/create", data);
       if (response.data.error) {
         alert(response.data.error);
+        setLoading(false);
       } else {
         alert(response.data.message);
+        setLoading(false);
         router.push("/");
       }
     } catch (err) {
@@ -363,7 +361,7 @@ export default function Register() {
                 Login
               </Link>
             </Text>
-            <Button fullWidth mt="xs" onClick={Register}>
+            <Button fullWidth mt="xs" onClick={Register} loading={loading}>
               Continue
             </Button>
           </Paper>
@@ -474,7 +472,7 @@ export default function Register() {
               <Image src={fileUrl} height={300} width={300} alt={""} />
             </Group>
 
-            <Button fullWidth mt="xs" onClick={RegisterStore}>
+            <Button fullWidth mt="xs" onClick={RegisterStore} loading={loading}>
               Create Store
             </Button>
           </Paper>

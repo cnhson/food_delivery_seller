@@ -73,6 +73,7 @@ export default function App(props: AppProps) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    //sessionStorage.removeItem("User");
     setLoading(true);
     if (sessionStorage.length > 0) {
       const user_id = sessionStorage.getItem("User");
@@ -125,6 +126,7 @@ export default function App(props: AppProps) {
           alert(error);
         } else {
           sessionStorage.setItem("User", response.data.userId);
+          sessionStorage.setItem("Store", response.data.storeId);
           setUserId(response.data.userId);
         }
       } catch (err) {

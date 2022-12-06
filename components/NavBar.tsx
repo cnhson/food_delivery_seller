@@ -100,11 +100,16 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: "/", label: "Dashboard", icon: IconDashboard },
-  { link: "/new-ticket", label: "New Product", icon: IconLayoutGridAdd },
+  { link: "/new-product", label: "New Product", icon: IconLayoutGridAdd },
+  {
+    link: "/new-product-type",
+    label: "New Product Type",
+    icon: IconLayoutGridAdd,
+  },
   { link: "/new-concert", label: "All Products", icon: IconBorderAll },
   { link: "", label: "Stats", icon: IconCalendarStats },
   { link: "", label: "Databases", icon: IconDatabaseImport },
-  { link: "", label: "Other Settings", icon: IconSettings },
+  { link: "", label: "Store Settings", icon: IconSettings },
 ];
 
 export default function NavbarSimple() {
