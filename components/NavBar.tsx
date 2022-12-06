@@ -106,7 +106,12 @@ const data = [
     label: "New Product Type",
     icon: IconLayoutGridAdd,
   },
-  { link: "/new-concert", label: "All Products", icon: IconBorderAll },
+  {
+    link: "/all-product-types",
+    label: "All Product Types",
+    icon: IconBorderAll,
+  },
+  { link: "/all-products", label: "All Products", icon: IconBorderAll },
   { link: "", label: "Stats", icon: IconCalendarStats },
   { link: "", label: "Databases", icon: IconDatabaseImport },
   { link: "", label: "Store Settings", icon: IconSettings },
