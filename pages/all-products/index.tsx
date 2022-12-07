@@ -18,6 +18,7 @@ import {
 } from "@mantine/core";
 import { IconEdit } from "@tabler/icons";
 import axios from "axios";
+import { client } from "../../components/common";
 //import Image from "next/image";
 
 const useStyles = createStyles((theme) => ({
@@ -58,6 +59,16 @@ type TypeProduct = {
   label: string;
 };
 
+type EditProduct = {
+  id: string;
+  store_id: string;
+  name: string;
+  description: string;
+  type_id: string;
+  image: string;
+  price: string;
+};
+
 export default function TableSelection() {
   const [productArray, setProductArray] = useState<Array<TableProducts>>([]);
   const { classes } = useStyles();
@@ -70,8 +81,10 @@ export default function TableSelection() {
   const [typeChosen, setTypeChosen] = useState<string>("");
 
   // product info
+  const [idProduct, setIdProduct] = useState<string>("");
   const [nameProduct, setNameProduct] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [imageProduct, setImageProduct] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
 
   // check if empty
@@ -147,6 +160,7 @@ export default function TableSelection() {
       setPrice(price);
       setTypeChosen(type_id);
       setFileUrl(process.env.IPFS_URL + image);
+      setImageProduct(image);
     } catch (err) {
       console.log(err);
     }
@@ -156,6 +170,86 @@ export default function TableSelection() {
     getAllProducts();
     getAllProductType();
   }, []);
+
+  async function editProduct() {
+    setLoading(true);
+    // if (
+    //   nameProduct === "" ||
+    //   description === "" ||
+    //   price === 0 ||
+    //   file === null ||
+    //   typeChosen === ""
+    // ) {
+    //   // check if name is empty
+    //   if (nameProduct === "") {
+    //     setEmptyName(true);
+    //   } else {
+    //     setEmptyName(false);
+    //   }
+
+    //   // check if description is empty
+    //   if (description === "") {
+    //     setEmptyDescription(true);
+    //   } else {
+    //     setEmptyDescription(false);
+    //   }
+
+    //   // check if price = 0
+    //   if (price === 0) {
+    //     setEmptyPrice(true);
+    //   } else {
+    //     setEmptyPrice(false);
+    //   }
+
+    //   // check if type is empty
+    //   if (typeChosen === "") {
+    //     setEmptyType(true);
+    //   } else {
+    //     setEmptyType(false);
+    //   }
+    //   setLoading(false);
+    //   return;
+    // }
+
+    setEmptyName(false);
+    setEmptyDescription(false);
+    setEmptyPrice(false);
+    setEmptyType(false);
+
+    if (file !== null) {
+      //save image into ipfs
+      const fileAdded = await client.add(file);
+      setImageProduct(fileAdded.path);
+    }
+
+    const data: EditProduct = {
+      id: idProduct,
+      store_id: store_id!,
+      name: nameProduct,
+      description: description,
+      type_id: typeChosen,
+      image: imageProduct,
+      price: price.toString(),
+    };
+
+    console.log(data);
+    // try {
+    //   const response = await axios.post(
+    //     process.env.API + "menu/new-product",
+    //     data
+    //   );
+    //   if (response.data.error) {
+    //     alert(response.data.error);
+    //     setLoading(false);
+    //     return;
+    //   }
+    //   alert(response.data.message);
+    // } catch (err) {
+    //   alert(err);
+    // }
+
+    setLoading(false);
+  }
 
   const rows = productArray.map((item) => {
     const Icon = IconEdit;
@@ -176,6 +270,7 @@ export default function TableSelection() {
             variant="default"
             onClick={() => {
               setOpened(true);
+              setIdProduct(item.product_id);
               getProductInfo(item.product_id);
             }}
           >
@@ -321,7 +416,7 @@ export default function TableSelection() {
                     radius="md"
                     mt="md"
                     withAsterisk
-                    defaultValue={price}
+                    defaultValue={Number(price)}
                     precision={2}
                     min={0}
                     parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
@@ -343,7 +438,7 @@ export default function TableSelection() {
                 </Paper>
               </Group>
 
-              <Button fullWidth loading={loading}>
+              <Button fullWidth onClick={editProduct} loading={loading}>
                 Edit Product
               </Button>
             </Paper>
