@@ -6,8 +6,7 @@ import {
   IconBorderAll,
   IconSettings,
   Icon2fa,
-  IconDatabaseImport,
-  IconReceipt2,
+  IconReceipt,
   IconDashboard,
   IconLogout,
 } from "@tabler/icons";
@@ -112,8 +111,8 @@ const data = [
     icon: IconBorderAll,
   },
   { link: "/all-products", label: "All Products", icon: IconBorderAll },
+  { link: "/orders", label: "Orders", icon: IconReceipt },
   { link: "", label: "Stats", icon: IconCalendarStats },
-  { link: "", label: "Databases", icon: IconDatabaseImport },
   { link: "", label: "Store Settings", icon: IconSettings },
 ];
 

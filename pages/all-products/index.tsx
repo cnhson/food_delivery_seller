@@ -173,43 +173,42 @@ export default function TableSelection() {
 
   async function editProduct() {
     setLoading(true);
-    // if (
-    //   nameProduct === "" ||
-    //   description === "" ||
-    //   price === 0 ||
-    //   file === null ||
-    //   typeChosen === ""
-    // ) {
-    //   // check if name is empty
-    //   if (nameProduct === "") {
-    //     setEmptyName(true);
-    //   } else {
-    //     setEmptyName(false);
-    //   }
+    if (
+      nameProduct === "" ||
+      description === "" ||
+      price === 0 ||
+      typeChosen === ""
+    ) {
+      // check if name is empty
+      if (nameProduct === "") {
+        setEmptyName(true);
+      } else {
+        setEmptyName(false);
+      }
 
-    //   // check if description is empty
-    //   if (description === "") {
-    //     setEmptyDescription(true);
-    //   } else {
-    //     setEmptyDescription(false);
-    //   }
+      // check if description is empty
+      if (description === "") {
+        setEmptyDescription(true);
+      } else {
+        setEmptyDescription(false);
+      }
 
-    //   // check if price = 0
-    //   if (price === 0) {
-    //     setEmptyPrice(true);
-    //   } else {
-    //     setEmptyPrice(false);
-    //   }
+      // check if price = 0
+      if (price === 0) {
+        setEmptyPrice(true);
+      } else {
+        setEmptyPrice(false);
+      }
 
-    //   // check if type is empty
-    //   if (typeChosen === "") {
-    //     setEmptyType(true);
-    //   } else {
-    //     setEmptyType(false);
-    //   }
-    //   setLoading(false);
-    //   return;
-    // }
+      // check if type is empty
+      if (typeChosen === "") {
+        setEmptyType(true);
+      } else {
+        setEmptyType(false);
+      }
+      setLoading(false);
+      return;
+    }
 
     setEmptyName(false);
     setEmptyDescription(false);
@@ -232,21 +231,20 @@ export default function TableSelection() {
       price: price.toString(),
     };
 
-    console.log(data);
-    // try {
-    //   const response = await axios.post(
-    //     process.env.API + "menu/new-product",
-    //     data
-    //   );
-    //   if (response.data.error) {
-    //     alert(response.data.error);
-    //     setLoading(false);
-    //     return;
-    //   }
-    //   alert(response.data.message);
-    // } catch (err) {
-    //   alert(err);
-    // }
+    try {
+      const response = await axios.post(
+        process.env.API + "menu/edit-product",
+        data
+      );
+      if (response.data.error) {
+        alert(response.data.error);
+        setLoading(false);
+        return;
+      }
+      alert(response.data.message);
+    } catch (err) {
+      alert(err);
+    }
 
     setLoading(false);
   }

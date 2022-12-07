@@ -18,8 +18,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   card: {
-    width: 270,
-    marginLeft: 30,
+    width: 300,
+    marginLeft: 15,
   },
 
   value: {

@@ -7,8 +7,8 @@ import axios from "axios";
 
 const useStyles = createStyles((theme) => ({
   root: {
-    marginTop: 30,
-    marginBottom: 50,
+    marginTop: 10,
+    marginBottom: 10,
   },
 }));
 

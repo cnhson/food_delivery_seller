@@ -121,6 +121,7 @@ export default function App(props: AppProps) {
           `${process.env.API}account/login`,
           data
         );
+        console.log(response);
         const { error, message } = response.data;
         if (error) {
           alert(error);
