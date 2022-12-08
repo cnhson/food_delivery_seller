@@ -24,7 +24,7 @@ import { client } from "../../components/common";
 const useStyles = createStyles((theme) => ({
   root: {
     marginTop: 40,
-    backgroundColor: "#EDF2FF",
+    backgroundColor: "#FAFAFA",
     height: "100%",
     width: "75vw",
   },
@@ -177,7 +177,12 @@ export default function TableSelection() {
   return (
     <div className={classes.root}>
       <Group position="center">
-        <Paper withBorder p="xl" radius="md">
+        <Paper
+          withBorder
+          p="xl"
+          radius="md"
+          shadow="0 0 35px rgb(127 150 174 / 15%);"
+        >
           <Text
             className={classes.title}
             component="span"

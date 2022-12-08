@@ -9,11 +9,16 @@ import {
   Paper,
   Skeleton,
   Button,
+  Modal,
+  useMantineTheme,
 } from "@mantine/core";
 import Image from "next/image";
 import arrowleft from "../../public/arrowleft.svg";
 import arrowright from "../../public/arrowright.svg";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { IconCheck, IconTruckDelivery, IconBrowserCheck } from "@tabler/icons";
+import moment from "moment";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -36,9 +41,12 @@ const useStyles = createStyles((theme) => ({
   totalText: {
     color: "#898989",
   },
+  thead: {
+    background: "#D1D1D1",
+  },
   paginationText: {
     display: "flex",
-    padding: 8,
+    padding: 5,
   },
   enableButtom: {
     color: "#0097FF",
@@ -48,87 +56,168 @@ const useStyles = createStyles((theme) => ({
   },
   root: {
     marginTop: 40,
-    backgroundColor: "#EDF2FF",
+    backgroundColor: "#FAFAFA",
     height: "100%",
     width: "80vw",
   },
 }));
 
 interface TableReviewsProps {
-  name: string;
-  last_date: string;
-  orders: number;
-  amount: number;
-  percentage: string;
+  id: string;
+  price: string;
+  email: string;
+  timestamp: string;
+  payment_method: string;
 }
 
-type Tab = "not accepted" | "accepted" | "shipping" | "success" | "failed";
+type UpdateStatus = {
+  account_id: string;
+  order_id: string;
+  status_id: string;
+};
+
+type Tab = "not received" | "received" | "shipping" | "success" | "failed";
+type StatusId = "FAL" | "NRY" | "RCD" | "SHP" | "SUC";
 
 export default function Orders() {
   const { classes } = useStyles();
-  const [customers, setCustomers] = useState<Array<TableReviewsProps>>([]);
-  const [tab, setTab] = useState<Tab>("not accepted");
-  const [isFinish, setIsFinish] = useState<Boolean>(false);
+  const [orders, setOrders] = useState<Array<TableReviewsProps>>([]);
+  const [tab, setTab] = useState<Tab>("not received");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(20);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [hasNext, setHasNext] = useState<boolean>(false);
+  const [hasPrevious, setHasPrevious] = useState<boolean>(false);
+  const [totalOrders, setTotalOrders] = useState<number>(0);
+  const [isFinish, setIsFinish] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [opened, setOpened] = useState(false);
+  const [orderId, setOrderId] = useState<string>("");
+  const theme = useMantineTheme();
+  const store_id = sessionStorage.getItem("Store");
+  const user_id = sessionStorage.getItem("User");
 
-  async function getAllCustomer() {
-    setCustomers([
-      {
-        name: "baomap",
-        last_date: "1665360000000",
-        orders: 2,
-        amount: 10000000,
-        percentage: "40",
-      },
-      {
-        name: "vynguyen",
-        last_date: "1667235600000",
-        orders: 1,
-        amount: 58000,
-        percentage: "10",
-      },
-      {
-        name: "baovy",
-        last_date: "1668297600000",
-        orders: 5,
-        amount: 2000000,
-        percentage: "50",
-      },
-    ]);
+  async function getAllOrders(status: Tab) {
+    let status_id: StatusId;
+    switch (status) {
+      case "not received":
+        status_id = "NRY";
+        break;
+      case "received":
+        status_id = "RCD";
+        break;
+      case "shipping":
+        status_id = "SHP";
+        break;
+      case "success":
+        status_id = "SUC";
+        break;
+      case "failed":
+        status_id = "FAL";
+        break;
+    }
+
+    try {
+      const response = await axios.get(
+        process.env.API +
+          `order/get-store-orders?store_id=${store_id}&status_id=${status_id}&page=${currentPage}&size=${size}`
+      );
+      const data = response.data;
+      setTotalOrders(data.total);
+      setTotalPages(data.pages);
+      setHasNext(data.hasNext);
+      setHasPrevious(data.hasPrevious);
+      setOrders(data.items);
+    } catch (err) {
+      console.log(err);
+    }
     setIsFinish(true);
   }
 
   useEffect(() => {
-    getAllCustomer();
-  }, []);
+    getAllOrders(tab);
+  }, [tab]);
 
-  const rows = customers!.map((row) => {
-    const latestDate = new Date(Number(row.last_date));
+  async function updateStatus(order_id: string) {
+    setLoading(true);
 
+    let status_id: StatusId = "RCD";
+    switch (tab) {
+      case "not received":
+        status_id = "RCD";
+        break;
+      case "received":
+        status_id = "SHP";
+        break;
+      case "shipping":
+        status_id = "SUC";
+        break;
+    }
+
+    const data: UpdateStatus = {
+      account_id: user_id!,
+      order_id: order_id,
+      status_id: status_id,
+    };
+
+    try {
+      const response = await axios.post(
+        process.env.API + "order/status-change",
+        data
+      );
+      if (response.data.error) {
+        alert(response.data.error);
+        setLoading(false);
+      } else {
+        alert(response.data.message);
+        setOpened(false);
+        setLoading(false);
+        window.location.reload();
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  }
+
+  const rows = orders!.map((row) => {
+    //const latestDate = new Date(Number(row.last_date));
+    let Icon = IconCheck;
+    switch (tab) {
+      case "not received":
+        Icon = IconBrowserCheck;
+        break;
+      case "received":
+        Icon = IconTruckDelivery;
+        break;
+      case "shipping":
+        Icon = IconCheck;
+        break;
+    }
     return (
-      <tr key={row.name}>
+      <tr key={row.id}>
         <td>
           <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.name}
+            {row.id}
           </Anchor>
         </td>
-        <td>{latestDate.toString().slice(0, 25)}</td>
-        <td>{row.orders}</td>
-        <td>{Intl.NumberFormat().format(row.amount)}</td>
+        <td>{row.email}</td>
+        <td>{Intl.NumberFormat().format(Number(row.price))}</td>
         <td>
-          <Group position="left">
-            <Text size="xs" transform="uppercase" weight={700} color="dimmed">
-              Percentage of total revenue:
-            </Text>
-            <Text size="md" weight={500}>
-              {row.percentage} %
-            </Text>
-          </Group>
-          <Progress
-            value={Number(row.percentage)}
-            mt="md"
-            size="lg"
-            radius="xl"
-          />
+          {moment(row.timestamp).format("MM/DD/YYYY h:mm a")}{" "}
+          <Text c="dimmed">({moment(row.timestamp).fromNow()})</Text>
+        </td>
+        <td>{row.payment_method}</td>
+        <td>
+          <Button
+            variant="default"
+            onClick={() => {
+              setOrderId(row.id);
+              setOpened(true);
+            }}
+          >
+            <Icon size={22} stroke={1.5} />
+          </Button>
         </td>
       </tr>
     );
@@ -139,53 +228,62 @@ export default function Orders() {
       <>
         <tr>
           <td>
-            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="90%" radius="xl" />
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
-          </td>
-          <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
-          </td>
-          <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
-          </td>
-          <td>
-            <Skeleton height={8} mt={6} width="90%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
         </tr>
         <tr>
           <td>
-            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="50%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
           <td>
-            <Skeleton height={8} mt={6} width="90%" radius="xl" />
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
+          </td>
+          <td>
+            <Skeleton height={8} mt={6} width="100%" radius="xl" />
           </td>
         </tr>
       </>
@@ -196,22 +294,22 @@ export default function Orders() {
       <Group position="left" mb={10}>
         <Button
           size="sm"
-          variant={tab == "not accepted" ? "filled" : "default"}
+          variant={tab == "not received" ? "filled" : "default"}
           radius="md"
           className={classes.tab}
           onClick={() => {
-            setTab("not accepted");
+            setTab("not received");
           }}
         >
           Not Accepted Yet
         </Button>
         <Button
           size="sm"
-          variant={tab == "accepted" ? "filled" : "default"}
+          variant={tab == "received" ? "filled" : "default"}
           radius="md"
           className={classes.tab}
           onClick={() => {
-            setTab("accepted");
+            setTab("received");
           }}
         >
           Accepted
@@ -251,25 +349,40 @@ export default function Orders() {
         </Button>
       </Group>
       <Group position="center">
-        <Paper withBorder p="md" radius="md" w="100vw">
+        <Paper
+          withBorder
+          p="md"
+          radius="md"
+          w="100vw"
+          shadow="0 0 35px rgb(127 150 174 / 15%);"
+        >
           <Group position="apart" className={classes.pagination}>
-            <span className={classes.totalText}>3 customers</span>
+            <span className={classes.totalText}>
+              Total {totalOrders} orders
+            </span>
             <Paper>
               <nav>
                 <ul>
                   <li>
                     <Button
                       variant="default"
-                      disabled={true}
+                      disabled={!isFinish ? true : currentPage == 1}
                       className={classes.enableButtom}
                       radius={5}
                       mr={2}
+                      size="xs"
                     >
                       first
                     </Button>
                   </li>
                   <li>
-                    <Button variant="default" disabled={true} radius={5} mr={2}>
+                    <Button
+                      variant="default"
+                      disabled={!isFinish ? true : !hasPrevious}
+                      radius={5}
+                      mr={2}
+                      size="xs"
+                    >
                       <Image src={arrowleft} width={10} height={10} alt={""} />
                     </Button>
                   </li>
@@ -285,16 +398,17 @@ export default function Orders() {
                         {" "}
                         Page <strong> 1 </strong>
                         of
-                        <strong> 3 </strong>
+                        <strong> {totalPages} </strong>
                       </span>
                     </Paper>
                   </li>
                   <li>
                     <Button
                       variant="default"
-                      disabled={false}
+                      disabled={!isFinish ? true : !hasNext}
                       radius={5}
                       mr={2}
+                      size="xs"
                     >
                       <Image src={arrowright} width={10} height={10} alt={""} />
                     </Button>
@@ -302,9 +416,10 @@ export default function Orders() {
                   <li>
                     <Button
                       variant="default"
-                      disabled={false}
+                      disabled={!isFinish ? true : currentPage == totalPages}
                       className={classes.enableButtom}
                       radius={5}
+                      size="xs"
                     >
                       Last
                     </Button>
@@ -313,38 +428,55 @@ export default function Orders() {
               </nav>
             </Paper>
           </Group>
-          <ScrollArea>
+          <Paper withBorder>
             <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
-              <thead>
+              <thead className={classes.thead}>
                 <tr>
                   <th>ID</th>
                   <th>Email</th>
                   <th>Total Price (USD)</th>
                   <th>Timestamp</th>
                   <th>Payment method</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>{isFinish ? rows : <Waiting />}</tbody>
             </Table>
-          </ScrollArea>
+            {orders.length == 0 ? (
+              <Group position="center">
+                <Text color="#B4B4B4" fw={500} mt={50} mb={50}>
+                  Empty
+                </Text>
+              </Group>
+            ) : (
+              <></>
+            )}
+          </Paper>
           <Group position="apart" className={classes.paginationBottom}>
-            <span className={classes.totalText}>10 Customers per page</span>
+            <span className={classes.totalText}>{size} orders per page</span>
             <Paper>
               <nav>
                 <ul>
                   <li>
                     <Button
                       variant="default"
-                      disabled={true}
+                      disabled={!isFinish ? true : currentPage == 1}
                       className={classes.enableButtom}
                       radius={5}
                       mr={2}
+                      size="xs"
                     >
                       first
                     </Button>
                   </li>
                   <li>
-                    <Button variant="default" disabled={true} radius={5} mr={2}>
+                    <Button
+                      variant="default"
+                      disabled={!isFinish ? true : !hasPrevious}
+                      radius={5}
+                      mr={2}
+                      size="xs"
+                    >
                       <Image src={arrowleft} width={10} height={10} alt={""} />
                     </Button>
                   </li>
@@ -360,16 +492,17 @@ export default function Orders() {
                         {" "}
                         Page <strong> 1 </strong>
                         of
-                        <strong> 3 </strong>
+                        <strong> {totalPages} </strong>
                       </span>
                     </Paper>
                   </li>
                   <li>
                     <Button
                       variant="default"
-                      disabled={false}
+                      disabled={!isFinish ? true : !hasNext}
                       radius={5}
                       mr={2}
+                      size="xs"
                     >
                       <Image src={arrowright} width={10} height={10} alt={""} />
                     </Button>
@@ -377,9 +510,10 @@ export default function Orders() {
                   <li>
                     <Button
                       variant="default"
-                      disabled={false}
+                      disabled={!isFinish ? true : currentPage == totalPages}
                       className={classes.enableButtom}
                       radius={5}
+                      size="xs"
                     >
                       Last
                     </Button>
@@ -390,6 +524,64 @@ export default function Orders() {
           </Group>
         </Paper>
       </Group>
+      <Modal
+        overlayColor={
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[9]
+            : theme.colors.gray[2]
+        }
+        overlayOpacity={0.55}
+        overlayBlur={3}
+        opened={opened}
+        onClose={() => setOpened(false)}
+      >
+        <Group position="center" mb={20}>
+          <Text
+            component="span"
+            align="center"
+            variant="gradient"
+            gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+            size="xl"
+            weight={700}
+            style={{ fontFamily: "Greycliff CF, sans-serif" }}
+          >
+            {tab == "not received"
+              ? "RECEIVE ORDER"
+              : tab == "received"
+              ? "CONFIRM ORDER FOR SHIPPING"
+              : tab == "shipping"
+              ? "CONFIRM SHIPPING"
+              : ""}
+          </Text>
+        </Group>
+        <Group position="center" mb={20}>
+          <Text
+            component="span"
+            align="center"
+            weight={500}
+            style={{ fontFamily: "Greycliff CF, sans-serif" }}
+          >
+            {tab == "not received"
+              ? "Are you sure to accept this order?"
+              : tab == "received"
+              ? "Are you sure to delivery this order?"
+              : tab == "shipping"
+              ? "Are you sure want to confirm that this order is delivered successfully?"
+              : ""}
+          </Text>
+        </Group>
+        <Group position="center" mb={10}>
+          <Button
+            variant="gradient"
+            gradient={{ from: "teal", to: "blue", deg: 60 }}
+            fullWidth
+            loading={loading}
+            onClick={() => updateStatus(orderId)}
+          >
+            Confirm
+          </Button>
+        </Group>
+      </Modal>
     </div>
   );
 }

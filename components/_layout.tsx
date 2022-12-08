@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const useStyles = createStyles((theme) => ({
   root: {
-    backgroundColor: "#EDF2FF",
+    backgroundColor: "#FAFAFA",
     height: "100%",
   },
   container: {

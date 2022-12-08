@@ -105,6 +105,7 @@ export default function StatsGrid() {
         radius="md"
         key={stat.title}
         className={classes.card}
+        shadow="0 0 35px rgb(127 150 174 / 10%);"
       >
         <Group position="apart">
           <Text size="xs" color="dimmed" className={classes.title}>

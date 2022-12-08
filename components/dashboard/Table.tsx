@@ -180,7 +180,12 @@ export default function TableReviews() {
     );
   }
   return (
-    <Paper withBorder p="md" radius="md">
+    <Paper
+      withBorder
+      p="md"
+      radius="md"
+      shadow="0 0 35px rgb(127 150 174 / 15%);"
+    >
       <Group position="apart" className={classes.pagination}>
         <span className={classes.totalText}>3 customers</span>
         <Paper>

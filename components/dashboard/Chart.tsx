@@ -5,13 +5,6 @@ import HighchartsReact from "highcharts-react-official";
 import { createStyles, Paper } from "@mantine/core";
 import axios from "axios";
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    marginTop: 10,
-    marginBottom: 10,
-  },
-}));
-
 type TypeOfData = Array<
   | number
   | [number | string, number | null]
@@ -20,7 +13,6 @@ type TypeOfData = Array<
 >;
 
 export default function App(props: HighchartsReact.Props) {
-  const { classes } = useStyles();
   const [data, setData] = React.useState<TypeOfData>();
 
   const getData = async () => {
@@ -88,7 +80,14 @@ export default function App(props: HighchartsReact.Props) {
   const chartComponentRef = React.useRef<HighchartsReact.RefObject>(null);
 
   return (
-    <Paper withBorder p="lg" radius="md" className={classes.root}>
+    <Paper
+      withBorder
+      p="lg"
+      radius="md"
+      mt={10}
+      mb={10}
+      shadow="0 0 35px rgb(127 150 174 / 15%);"
+    >
       <HighchartsReact
         highcharts={Highcharts}
         options={options}
