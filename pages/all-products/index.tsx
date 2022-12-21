@@ -101,6 +101,7 @@ export default function TableSelection() {
 
   async function getAllProducts() {
     try {
+
       const response = await axios.get(
         process.env.API + "menu/get-all-products/" + store_id
       );
@@ -253,13 +254,7 @@ export default function TableSelection() {
     const Icon = IconEdit;
     return (
       <tr key={item.product_id}>
-        <td>
-          <Group spacing="sm">
-            <Text size="sm" weight={500}>
-              {item.product_id}
-            </Text>
-          </Group>
-        </td>
+        <td> {item.product_id}</td>
         <td>{item.name}</td>
         <td>$ {item.price}</td>
         <td>{item.type}</td>

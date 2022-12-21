@@ -64,16 +64,18 @@ const useStyles = createStyles((theme) => ({
 
 interface TableReviewsProps {
   id: string;
-  price: string;
   email: string;
   timestamp: string;
+  product: string;
+  product_id: number;
+  proceed: number;
   payment_method: string;
 }
 
-type UpdateStatus = {
-  account_id: string;
+type ProceedOrder = {
   order_id: string;
-  status_id: string;
+  product_id: number;
+  store_id: string;
 };
 
 type Tab = "not received" | "received" | "shipping" | "success" | "failed";
@@ -93,6 +95,7 @@ export default function Orders() {
   const [loading, setLoading] = useState<boolean>(false);
   const [opened, setOpened] = useState(false);
   const [orderId, setOrderId] = useState<string>("");
+  const [productId, setProductId] = useState<number>(0);
   const theme = useMantineTheme();
   const store_id = sessionStorage.getItem("Store");
   const user_id = sessionStorage.getItem("User");
@@ -138,35 +141,36 @@ export default function Orders() {
     getAllOrders(tab);
   }, [tab]);
 
-  async function updateStatus(order_id: string) {
+  async function ProceedOrder(order_id: string, product_id:number) {
     setLoading(true);
 
-    let status_id: StatusId = "RCD";
-    switch (tab) {
-      case "not received":
-        status_id = "RCD";
-        break;
-      case "received":
-        status_id = "SHP";
-        break;
-      case "shipping":
-        status_id = "SUC";
-        break;
-    }
+    // let status_id: StatusId = "RCD";
+    // switch (tab) {
+    //   case "not received":
+    //     status_id = "RCD";
+    //     break;
+    //   case "received":
+    //     status_id = "SHP";
+    //     break;
+    //   case "shipping":
+    //     status_id = "SUC";
+    //     break;
+    // }
 
-    const data: UpdateStatus = {
-      account_id: user_id!,
+    const data: ProceedOrder = {
       order_id: order_id,
-      status_id: status_id,
+      product_id: product_id,
+      store_id: store_id!,
     };
 
     try {
       const response = await axios.post(
-        process.env.API + "order/status-change",
+        process.env.API + "order/proceed",
         data
       );
       if (response.data.error) {
         alert(response.data.error);
+        setOpened(false);
         setLoading(false);
       } else {
         alert(response.data.message);
@@ -202,17 +206,19 @@ export default function Orders() {
           </Anchor>
         </td>
         <td>{row.email}</td>
-        <td>{Intl.NumberFormat().format(Number(row.price))}</td>
+        <td>{row.product}</td>
         <td>
           {moment(row.timestamp).format("MM/DD/YYYY h:mm a")}{" "}
           <Text c="dimmed">({moment(row.timestamp).fromNow()})</Text>
         </td>
         <td>{row.payment_method}</td>
+        <td>{row.proceed}</td>
         <td>
           <Button
             variant="default"
             onClick={() => {
               setOrderId(row.id);
+              setProductId(row.product_id);
               setOpened(true);
             }}
           >
@@ -348,12 +354,12 @@ export default function Orders() {
           Failed
         </Button>
       </Group>
-      <Group position="center">
+      <Group position="center" w={1320}>
         <Paper
           withBorder
           p="md"
-          radius="md"
-          w="100vw"
+          radius="md"          
+          w="150vw"
           shadow="0 0 35px rgb(127 150 174 / 15%);"
         >
           <Group position="apart" className={classes.pagination}>
@@ -433,10 +439,11 @@ export default function Orders() {
               <thead className={classes.thead}>
                 <tr>
                   <th>ID</th>
-                  <th>Email</th>
-                  <th>Total Price (USD)</th>
+                  <th>Users' Email</th>
+                  <th>Product</th>
                   <th>Timestamp</th>
                   <th>Payment method</th>
+                  <th>Proceed</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -576,7 +583,7 @@ export default function Orders() {
             gradient={{ from: "teal", to: "blue", deg: 60 }}
             fullWidth
             loading={loading}
-            onClick={() => updateStatus(orderId)}
+            onClick={() => ProceedOrder(orderId, productId)}
           >
             Confirm
           </Button>

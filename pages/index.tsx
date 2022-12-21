@@ -100,6 +100,8 @@ export default function StatsGrid() {
 
     return (
       <Paper
+        ml={0}
+        w={288}
         withBorder
         p="md"
         radius="md"

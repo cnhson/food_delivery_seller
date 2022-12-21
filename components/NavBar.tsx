@@ -12,7 +12,7 @@ import {
 } from "@tabler/icons";
 import { UserButton } from "./UserButton";
 import Image from "next/image";
-import image from "../public/Mustifi.svg";
+//import image from "../public/Mustifi.svg";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -155,11 +155,11 @@ export default function NavbarSimple() {
   }, [router]);
 
   return (
-    <Navbar className={classes.root} width={{ sm: 300 }} p="md">
+    <Navbar className={classes.root} width={{ sm: 240 }} p="md">
       <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
+        {/* <Group className={classes.header} position="apart">
           <Image src={image} height={50} width={100} alt={""} />
-        </Group>
+        </Group> */}
         {links}
       </Navbar.Section>
       <Navbar.Section className={classes.footer}>

@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
     height: "100%",
   },
   container: {
-    marginLeft: 320,
+    marginLeft: 260,
     marginTop: 50,
   },
 }));

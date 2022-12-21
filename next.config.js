@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-};
+// const nextConfig = {
+//   reactStrictMode: false,
+//   swcMinify: true,
+// };
 
 module.exports = {
-  nextConfig,
+  reactStrictMode: false,
+  swcMinify: true,
   env: {
     API: process.env.API,
     SECRET_KEY: process.env.SECRET_KEY,
