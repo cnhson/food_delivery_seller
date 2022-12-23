@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
   return {
@@ -163,7 +164,7 @@ export default function NavbarSimple() {
         {links}
       </Navbar.Section>
       <Navbar.Section className={classes.footer}>
-        <UserButton email={name} />
+        <UserButton email={name}/>
       </Navbar.Section>
     </Navbar>
   );

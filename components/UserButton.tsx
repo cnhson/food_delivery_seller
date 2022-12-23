@@ -7,6 +7,7 @@ import {
   createStyles,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -33,8 +34,18 @@ interface UserButtonProps extends UnstyledButtonProps {
 export function UserButton({ image, email, icon, ...others }: UserButtonProps) {
   const { classes } = useStyles();
 
+  const router = useRouter();
+
+  const logOut = () => {
+  sessionStorage.removeItem('Store');
+  sessionStorage.removeItem('User');
+  router.push("/");
+  window.location.reload();
+}
+
+
   return (
-    <UnstyledButton className={classes.user} {...others}>
+    <UnstyledButton className={classes.user} {...others} onClick={() => logOut()}>
       <Group>
         <Avatar src={image} radius="xl" />
 
