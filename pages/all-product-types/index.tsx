@@ -234,7 +234,7 @@ export default function TableSelection() {
               <Group position="center" mb={50}>
                 <Paper ml={40}>
                   <TextInput
-                    placeholder="What is your product's name?"
+                    placeholder="What is your product&apos;s name?"
                     label="Name of the product"
                     radius="md"
                     withAsterisk

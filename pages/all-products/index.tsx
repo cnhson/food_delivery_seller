@@ -335,7 +335,7 @@ export default function TableSelection() {
               <Group position="apart" mb={50}>
                 <Paper>
                   <FileInput
-                    label="Your product's image"
+                    label="Your product&apos;s image"
                     placeholder="Pick an image of your product"
                     required
                     mt="md"

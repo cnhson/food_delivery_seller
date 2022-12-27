@@ -208,7 +208,7 @@ export default function NewProduct() {
           <Group position="apart" mb={50}>
             <Paper>
               <FileInput
-                label="Your product's image"
+                label="Your product&apos;s image"
                 placeholder="Pick an image of your product"
                 required
                 mt="md"
@@ -234,7 +234,7 @@ export default function NewProduct() {
             </Paper>
             <Paper ml={40}>
               <TextInput
-                placeholder="What is your product's name?"
+                placeholder="What is your product&apos;s name?"
                 label="Name of the product"
                 radius="md"
                 withAsterisk

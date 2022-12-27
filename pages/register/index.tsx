@@ -249,7 +249,7 @@ export default function Register() {
       }
     } catch (err) {
       setLoading(false);
-      alert(err.response.data.error);
+      alert(err);
       console.log(err);
     }
   }
@@ -452,7 +452,7 @@ export default function Register() {
               <></>
             )}
             <FileInput
-              label="Your store's image"
+              label="Your store&apos;s image"
               placeholder="Pick an image of your store"
               required
               mt="md"

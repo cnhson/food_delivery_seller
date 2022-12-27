@@ -439,7 +439,7 @@ export default function Orders() {
               <thead className={classes.thead}>
                 <tr>
                   <th>ID</th>
-                  <th>Users' Email</th>
+                  <th>Users&apos; Email</th>
                   <th>Product</th>
                   <th>Timestamp</th>
                   <th>Payment method</th>
