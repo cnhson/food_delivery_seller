@@ -248,6 +248,8 @@ export default function Register() {
         router.push("/");
       }
     } catch (err) {
+      setLoading(false);
+      alert(err.response.data.error);
       console.log(err);
     }
   }
@@ -384,6 +386,7 @@ export default function Register() {
               Create Your Store!
             </Text>
             <TextInput
+              value={storeName}
               label="Store name"
               placeholder="A Store"
               mt="md"
@@ -399,6 +402,7 @@ export default function Register() {
               <></>
             )}
             <TextInput
+              value={address}
               label="Store address"
               placeholder="01 Vo Van Ngan"
               required

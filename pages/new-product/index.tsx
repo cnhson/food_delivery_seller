@@ -177,6 +177,7 @@ export default function NewProduct() {
       }
       alert(response.data.message);
     } catch (err) {
+      setLoading(false);
       alert(err);
     }
 

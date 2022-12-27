@@ -140,6 +140,7 @@ export default function TableSelection() {
       }
       alert(response.data.message);
     } catch (err) {
+      setLoading(false);
       alert(err);
     }
 

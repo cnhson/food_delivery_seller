@@ -74,6 +74,7 @@ export default function NewProductType() {
 
       alert(response.data.message);
     } catch (err) {
+      setLoading(false);
       alert(err);
     }
 
@@ -103,7 +104,7 @@ export default function NewProductType() {
           </Text>
           <TextInput
             placeholder="What is your name of product's type"
-            label="Name of the type"
+            label="Name of the type in lowercase (ex: drink, fastfood, milktea,...)"
             radius="md"
             withAsterisk
             className={classes.textInput}
