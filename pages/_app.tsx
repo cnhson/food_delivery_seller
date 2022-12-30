@@ -22,6 +22,7 @@ import ForgotPassword from "./forgot-password";
 import Link from "next/link";
 import axios from "axios";
 
+
 const useStyles = createStyles((theme) => ({
   wrapper: {
     minHeight: "100vh",
@@ -121,14 +122,21 @@ export default function App(props: AppProps) {
           `${process.env.API}account/login`,
           data
         );
-        console.log(response);
+        //console.log(response);
         const { error, message } = response.data;
         if (error) {
           alert(error);
         } else {
-          sessionStorage.setItem("User", response.data.userId);
-          sessionStorage.setItem("Store", response.data.storeId);
-          setUserId(response.data.userId);
+          if(response.data.storeId === 0){
+            sessionStorage.setItem("TempUser", response.data.userId);
+            router.push("register");
+          }
+          else
+          {
+            sessionStorage.setItem("User", response.data.userId);
+            sessionStorage.setItem("Store", response.data.storeId);
+            setUserId(response.data.userId);
+          }
         }
       } catch (err) {
         //@ts-ignore

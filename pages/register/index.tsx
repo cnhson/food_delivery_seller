@@ -61,6 +61,7 @@ type TypeStore = {
 
 export default function Register() {
   const { classes } = useStyles();
+  const router = useRouter();
 
   // info of account
   const [name, setName] = useState<string>("");
@@ -100,8 +101,16 @@ export default function Register() {
 
   // check if account is created successfully
   const [created, setCreated] = useState<boolean>(false);
+  useEffect(() => {
+    const user_id = sessionStorage.getItem("TempUser");
+    
+    if(user_id!=null){
+      setAccountId(user_id);
+      setCreated(true);
+      setLoading(false);
+    }
 
-  const router = useRouter();
+  })
 
   // create account
   async function Register() {
@@ -475,8 +484,8 @@ export default function Register() {
             <Group mt="md">
               <Image src={fileUrl} height={300} width={300} alt={""} />
             </Group>
-
             <Button fullWidth mt="xs" onClick={RegisterStore} loading={loading}>
+
               Create Store
             </Button>
           </Paper>
