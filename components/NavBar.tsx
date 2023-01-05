@@ -113,8 +113,8 @@ const data = [
   },
   { link: "/all-products", label: "All Products", icon: IconBorderAll },
   { link: "/orders", label: "Orders", icon: IconReceipt },
-  { link: "", label: "Stats", icon: IconCalendarStats },
-  { link: "", label: "Store Settings", icon: IconSettings },
+  // { link: "", label: "Stats", icon: IconCalendarStats },
+  // { link: "", label: "Store Settings", icon: IconSettings },
 ];
 
 export default function NavbarSimple() {
@@ -151,9 +151,9 @@ export default function NavbarSimple() {
     </Link>
   ));
 
-  useEffect(() => {
-    console.log(router);
-  }, [router]);
+  // useEffect(() => {
+  //   console.log(router);
+  // }, [router]);
 
   return (
     <Navbar className={classes.root} width={{ sm: 240 }} p="md">

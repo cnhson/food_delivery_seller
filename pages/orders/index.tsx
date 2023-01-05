@@ -1,11 +1,11 @@
 import {
   createStyles,
   Table,
-  Progress,
+  //Progress,
   Anchor,
   Text,
   Group,
-  ScrollArea,
+  //ScrollArea,
   Paper,
   Skeleton,
   Button,
@@ -17,7 +17,7 @@ import arrowleft from "../../public/arrowleft.svg";
 import arrowright from "../../public/arrowright.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IconCheck, IconTruckDelivery, IconBrowserCheck } from "@tabler/icons";
+import { IconCheck, IconTruckDelivery, IconBrowserCheck, IconCircleCheck } from "@tabler/icons";
 import moment from "moment";
 
 const useStyles = createStyles((theme) => ({
@@ -68,6 +68,7 @@ interface TableReviewsProps {
   timestamp: string;
   product: string;
   product_id: number;
+  status: string;
   proceed: number;
   payment_method: string;
 }
@@ -126,7 +127,7 @@ export default function Orders() {
           `order/get-store-orders?store_id=${store_id}&status_id=${status_id}&page=${currentPage}&size=${size}`
       );
       const data = response.data;
-      setTotalOrders(data.total);
+      setTotalOrders(data.items.length);
       setTotalPages(data.pages);
       setHasNext(data.hasNext);
       setHasPrevious(data.hasPrevious);
@@ -186,18 +187,18 @@ export default function Orders() {
 
   const rows = orders!.map((row) => {
     //const latestDate = new Date(Number(row.last_date));
-    let Icon = IconCheck;
-    switch (tab) {
-      case "not received":
-        Icon = IconBrowserCheck;
-        break;
-      case "received":
-        Icon = IconTruckDelivery;
-        break;
-      case "shipping":
-        Icon = IconCheck;
-        break;
-    }
+    let Icon = IconCircleCheck;
+    // switch (tab) {
+    //   case "not received":
+    //     Icon = IconBrowserCheck;
+    //     break;
+    //   case "received":
+    //     Icon = IconTruckDelivery;
+    //     break;
+    //   case "shipping":
+    //     Icon = IconCheck;
+    //     break;
+    // }
     return (
       <tr key={row.id}>
         <td>
@@ -208,12 +209,13 @@ export default function Orders() {
         <td>{row.email}</td>
         <td>{row.product}</td>
         <td>
-          {moment(row.timestamp).format("MM/DD/YYYY h:mm a")}{" "}
+          {moment(row.timestamp).format("MM/DD/YYYY h:mm a")}
           <Text c="dimmed">({moment(row.timestamp).fromNow()})</Text>
         </td>
         <td>{row.payment_method}</td>
-        <td>{row.proceed}</td>
+        <td>{row.status != "failed" ? row.proceed : "Cancelled"}</td>
         <td>
+          { row.status != "failed" && row.proceed === 0 &&
           <Button
             variant="default"
             onClick={() => {
@@ -224,6 +226,7 @@ export default function Orders() {
           >
             <Icon size={22} stroke={1.5} />
           </Button>
+          }
         </td>
       </tr>
     );
@@ -297,7 +300,7 @@ export default function Orders() {
   }
   return (
     <div className={classes.root}>
-      <Group position="left" mb={10}>
+      {/* <Group position="left" mb={10}>
         <Button
           size="sm"
           variant={tab == "not received" ? "filled" : "default"}
@@ -353,7 +356,7 @@ export default function Orders() {
         >
           Failed
         </Button>
-      </Group>
+      </Group> */}
       <Group position="center" w={1320}>
         <Paper
           withBorder
@@ -378,7 +381,7 @@ export default function Orders() {
                       mr={2}
                       size="xs"
                     >
-                      first
+                      First
                     </Button>
                   </li>
                   <li>
@@ -473,7 +476,7 @@ export default function Orders() {
                       mr={2}
                       size="xs"
                     >
-                      first
+                      First
                     </Button>
                   </li>
                   <li>

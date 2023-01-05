@@ -45,7 +45,7 @@ export default function NewProductType() {
   // loading
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function createProduct() {
+  async function createProductType() {
     setLoading(true);
     if (nameProductType === "") {
       setEmptyName(true);
@@ -66,16 +66,15 @@ export default function NewProductType() {
         process.env.API + "menu/new-product-type",
         data
       );
-      if (response.data.error) {
-        alert(response.data.error);
+      if (response) {
+        alert(response.data.message);
         setLoading(false);
         return;
       }
 
-      alert(response.data.message);
-    } catch (err) {
+    } catch (error) {
       setLoading(false);
-      alert(err);
+      alert("Must be in lowercased with no special characters");
     }
 
     setLoading(false);
@@ -104,7 +103,7 @@ export default function NewProductType() {
           </Text>
           <TextInput
             placeholder="What is your name of product's type"
-            label="Name of the type in lowercase (ex: drink, fastfood, milktea,...)"
+            label="Lowercased with no special characters (ex: drink,..)"
             radius="md"
             withAsterisk
             className={classes.textInput}
@@ -118,7 +117,7 @@ export default function NewProductType() {
           ) : (
             <></>
           )}
-          <Button mt="xl" fullWidth onClick={createProduct} loading={loading}>
+          <Button mt="xl" fullWidth onClick={createProductType} loading={loading}>
             Create New Product Type
           </Button>
         </Paper>
