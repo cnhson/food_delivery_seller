@@ -91,40 +91,43 @@ export default function Orders() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [hasNext, setHasNext] = useState<boolean>(false);
   const [hasPrevious, setHasPrevious] = useState<boolean>(false);
+  const [isProceed, setIsProceed] = useState<boolean>(false);
   const [totalOrders, setTotalOrders] = useState<number>(0);
   const [isFinish, setIsFinish] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState<boolean>(false);
   const [orderId, setOrderId] = useState<string>("");
   const [productId, setProductId] = useState<number>(0);
   const theme = useMantineTheme();
   const store_id = sessionStorage.getItem("Store");
   const user_id = sessionStorage.getItem("User");
 
-  async function getAllOrders(status: Tab) {
-    let status_id: StatusId;
-    switch (status) {
-      case "not received":
-        status_id = "NRY";
-        break;
-      case "received":
-        status_id = "RCD";
-        break;
-      case "shipping":
-        status_id = "SHP";
-        break;
-      case "success":
-        status_id = "SUC";
-        break;
-      case "failed":
-        status_id = "FAL";
-        break;
-    }
+  async function getAllOrders() {
+    // status: Tab
+    // let status_id: StatusId;
+    // switch (status) {
+    //   case "not received":
+    //     status_id = "NRY";
+    //     break;
+    //   case "received":
+    //     status_id = "RCD";
+    //     break;
+    //   case "shipping":
+    //     status_id = "SHP";
+    //     break;
+    //   case "success":
+    //     status_id = "SUC";
+    //     break;
+    //   case "failed":
+    //     status_id = "FAL";
+    //     break;
+    // }
+    // order/get-store-orders?store_id=${store_id}&status_id=${status_id}&page=${currentPage}&size=${size}
 
     try {
       const response = await axios.get(
         process.env.API +
-          `order/get-store-orders?store_id=${store_id}&status_id=${status_id}&page=${currentPage}&size=${size}`
+          `order/get-store-orders?store_id=${store_id}&page=${currentPage}&size=${size}`
       );
       const data = response.data;
       setTotalOrders(data.items.length);
@@ -132,6 +135,7 @@ export default function Orders() {
       setHasNext(data.hasNext);
       setHasPrevious(data.hasPrevious);
       setOrders(data.items);
+      setIsProceed(false);
     } catch (err) {
       console.log(err);
     }
@@ -139,8 +143,8 @@ export default function Orders() {
   }
 
   useEffect(() => {
-    getAllOrders(tab);
-  }, [tab]);
+    getAllOrders();
+  }, [isProceed]);
 
   async function ProceedOrder(order_id: string, product_id:number) {
     setLoading(true);
@@ -174,10 +178,10 @@ export default function Orders() {
         setOpened(false);
         setLoading(false);
       } else {
-        alert(response.data.message);
+        //alert(response.data.message);
+        setIsProceed(true);
         setOpened(false);
         setLoading(false);
-        window.location.reload();
       }
     } catch (err) {
       console.log(err);
@@ -572,7 +576,7 @@ export default function Orders() {
             style={{ fontFamily: "Greycliff CF, sans-serif" }}
           >
             {tab == "not received"
-              ? "Are you sure to accept this order?"
+              ? "Are you sure to proceed this order's product?"
               : tab == "received"
               ? "Are you sure to delivery this order?"
               : tab == "shipping"
